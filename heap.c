@@ -14,6 +14,7 @@ void insert(int heap[], int data, int *location)
         heap[root] = data;
     }
     (*location)++;
+    
 }
 void maxHeapfy(int mix[], int i, int n)
 {
