@@ -7,7 +7,6 @@ typedef struct node
     char letter;
     int frequency;
     struct node *left, *right, *next;
-
 } Node;
 
 ////////////// Queue Operations
@@ -202,31 +201,29 @@ void printTree(Node *head)
 
     while (!isEmpty(queue))
     {
-        do
+
+        // Sıradan bir eleman alıyoruz.
+        // eleman NULL değil ise ekrana yazıp sol ve sağ node'larını (eğer varsa) sıraya ekleriz.
+        Node *node = dequeue(queue);
+        if (node != NULL)
         {
-            // Sıradan bir eleman alıyoruz.
-            // eleman NULL değil ise ekrana yazıp sol ve sağ node'larını (eğer varsa) sıraya ekleriz.
-            Node *node = dequeue(queue);
-            if (node != NULL)
-            {
-                if (node->letter != ' ')
-                    printf("%d%c ", node->frequency, node->letter);
-                else
-                    printf("%d[Space] ", node->frequency);
-                if (node->left != NULL)
-                    enqueue(queue, node->left);
-                if (node->right != NULL)
-                    enqueue(queue, node->right);
-            }
-            // Node NULL ise seviyedeki bütün elemanları yazmışız demektir.
-            // Seviye bittiği için alt satıra geçeriz ve seviyenin bittiğini belirtmek için
-            // Sıraya bir NULL daha ekleriz.
+            if (node->letter != ' ')
+                printf("%d%c ", node->frequency, node->letter);
             else
-            {
-                printf("\n");
-                enqueue(queue, NULL);
-            }
-        } while (node != NULL);
+                printf("%d[Space] ", node->frequency);
+            if (node->left != NULL)
+                enqueue(queue, node->left);
+            if (node->right != NULL)
+                enqueue(queue, node->right);
+        }
+        // Node NULL ise seviyedeki bütün elemanları yazmışız demektir.
+        // Seviye bittiği için alt satıra geçeriz ve seviyenin bittiğini belirtmek için
+        // Sıraya bir NULL daha ekleriz.
+        else
+        {
+            printf("\n");
+            enqueue(queue, NULL);
+        }
     }
 }
 
@@ -235,7 +232,6 @@ int main()
     char *word;
     printf("Enter a string: ");
     scanf("%[^\n]", word);
-    printf("\n%s\n", word);
     Node *head = fillLinkedList(head, word);
     while (head->next != NULL)
         head = treefy(head);
