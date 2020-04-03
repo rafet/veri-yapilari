@@ -104,11 +104,18 @@ Node *insertSorted(Node *head, Node *newNode)
 int *calcFrequencies(char word[])
 {
     // frekansların ilk değerleri 0 olacağı için static anahtar kelimesini kullandık.
-    static int freqs[26], i;
+    static int freqs[27], i;
     for (i = 0; i < strlen(word); i++)
-        // her bir harften 'a' karakterinin ascii değerini çıkararak harflerin
-        // dizide karşılık gelen indislerini buluyoruz ve 1 artırıyoruz.
-        freqs[word[i] - 'a']++;
+    // her bir harften 'a' karakterinin ascii değerini çıkararak harflerin
+    // dizide karşılık gelen indislerini buluyoruz ve 1 artırıyoruz.
+    {
+        if (word[i] >= 'a' && word[i] <= 'z')
+            freqs[word[i] - 'a']++;
+        else if (word[i] == ' ')
+        {
+            freqs[26]++;
+        }
+    }
     return freqs;
 }
 
@@ -143,9 +150,9 @@ Node *fillLinkedList(Node *head, char *word)
 {
     int i;
     int *frequencies = calcFrequencies(word);
-    for (i = 0; i < 26; i++)
+    for (i = 0; i < 27; i++)
         if (frequencies[i] != 0) // kelimeden geçmeyen harfleri es geçiyoruz
-            head = insertSorted(head, createNode(i + 'a', frequencies[i]));
+            head = insertSorted(head, createNode(i == 26 ? ' ' : i + 'a', frequencies[i]));
     return head;
 }
 
@@ -202,7 +209,10 @@ void printTree(Node *head)
             Node *node = dequeue(queue);
             if (node != NULL)
             {
-                printf("%d%c ", node->frequency, node->letter);
+                if (node->letter != ' ')
+                    printf("%d%c ", node->frequency, node->letter);
+                else
+                    printf("%d[Space] ", node->frequency);
                 if (node->left != NULL)
                     enqueue(queue, node->left);
                 if (node->right != NULL)
@@ -222,7 +232,10 @@ void printTree(Node *head)
 
 int main()
 {
-    char *word = "aebabcbade";
+    char *word;
+    printf("Enter a string: ");
+    scanf("%[^\n]", word);
+    printf("\n%s\n", word);
     Node *head = fillLinkedList(head, word);
     while (head->next != NULL)
         head = treefy(head);
