@@ -13,16 +13,19 @@ int calcSingleHash(string txt)
     int hash = 0, i;
     for (i = 0; i < strlen(txt); i++)
         hash += val(txt[i]) * pow(prime, i);
-    printf("%d ", hash);
+
     return hash;
 }
 int *calculateHashes(string text, string pattern)
 {
     static int hashes[100];
     int n = strlen(text),
-        lastHash = calcSingleHash(pattern),
+        lastHash = 0,
         patternLength = strlen(pattern),
         i, k = 0;
+
+    for (i = 0; i < patternLength; i++)
+        lastHash += val(text[i]) * pow(prime, i);
 
     hashes[k++] = lastHash;
     for (i = 1; i < n - patternLength + 1; i++)
@@ -38,10 +41,7 @@ int find(string text, string pattern)
 {
     int *hashes = calculateHashes(text, pattern);
     int hashesLength = strlen(text) - strlen(pattern) + 1;
-
-    int patternHash = 0, i;
-    for (i = 0; i < strlen(pattern); i++)
-        patternHash += val(pattern[i]) * pow(prime, i);
+    int patternHash = calcSingleHash(pattern), i;
 
     for (i = 0; i < hashesLength; i++)
         if (patternHash == hashes[i])
